@@ -41,3 +41,6 @@ group :development do
   gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
 end
 
+gem 'dynflow'
+gem 'sequel', '>= 4.0.0'
+gem 'get_process_mem'

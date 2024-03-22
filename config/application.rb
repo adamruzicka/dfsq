@@ -14,6 +14,9 @@ require "action_view/railtie"
 # require "action_cable/engine"
 require "rails/test_unit/railtie"
 
+require 'sequel'
+require 'dynflow'
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -40,5 +43,27 @@ module Dfsq
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Use Dynflow as the backend for ActiveJob
+    # config.active_job.queue_adapter = :dynflow
+
+    config.after_initialize do
+      init_dynflow unless in_rake?('db:create') || in_rake?('db:drop')
+    end
+
+    def dynflow
+      @dynflow ||= ::Dynflow::Rails.new().tap(&:require!)
+    end
+
+    def init_dynflow
+      dynflow.eager_load_actions!
+    end
+
+    def self.in_rake?(*rake_tasks)
+      return false unless defined?(Rake) && Rake.respond_to?(:application)
+      Rake.application.top_level_tasks.any? do |running_rake_task|
+        rake_tasks.empty? || rake_tasks.any? { |rake_task| running_rake_task.start_with?(rake_task) }
+      end
+    end
   end
 end
