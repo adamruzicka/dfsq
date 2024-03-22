@@ -48,6 +48,7 @@ module Dfsq
     # config.active_job.queue_adapter = :dynflow
 
     config.after_initialize do
+      SolidQueue::Worker.include(SolidQueueWorkerExtensions)
       init_dynflow unless in_rake?('db:create') || in_rake?('db:drop')
     end
 

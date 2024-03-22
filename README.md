@@ -1,24 +1,17 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Start solid_queue
 
-Things you may want to cover:
+``` shell
+bundle exec rake solid_queue:star
+```
 
-* Ruby version
+Watch the logs
+``` shell
+tail -f log/development.log
+```
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run some jobs
+``` shell
+echo '10.times { ::Rails.application.dynflow.world.plan_elsewhere(Counter, 100) }' | bundle exec rails console
+```
